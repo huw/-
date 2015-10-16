@@ -7,9 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		427D5F991BD09BB500FA1A35 /* Card.swift in Sources */ = {isa = PBXBuildFile; fileRef = 427D5F981BD09BB500FA1A35 /* Card.swift */; settings = {ASSET_TAGS = (); }; };
 		42814AC31BC6299A001E420E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42814AC21BC6299A001E420E /* AppDelegate.swift */; };
-		42814AC51BC6299A001E420E /* GameScene.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42814AC41BC6299A001E420E /* GameScene.swift */; };
-		42814AC71BC6299A001E420E /* GameScene.sks in Resources */ = {isa = PBXBuildFile; fileRef = 42814AC61BC6299A001E420E /* GameScene.sks */; };
+		42814AC51BC6299A001E420E /* Game.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42814AC41BC6299A001E420E /* Game.swift */; };
+		42814AC71BC6299A001E420E /* Game.sks in Resources */ = {isa = PBXBuildFile; fileRef = 42814AC61BC6299A001E420E /* Game.sks */; };
 		42814AC91BC6299A001E420E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 42814AC81BC6299A001E420E /* Assets.xcassets */; };
 		42814ACC1BC6299B001E420E /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 42814ACA1BC6299B001E420E /* MainMenu.xib */; };
 		42814AD71BC6299B001E420E /* blackjackTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 42814AD61BC6299B001E420E /* blackjackTests.swift */; };
@@ -34,19 +35,21 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		42814ABF1BC6299A001E420E /* blackjack.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = blackjack.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		427D5F981BD09BB500FA1A35 /* Card.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Card.swift; sourceTree = "<group>"; };
+		42814ABF1BC6299A001E420E /* Blackjack.temp_caseinsensitive_rename.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Blackjack.temp_caseinsensitive_rename.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		42814AC21BC6299A001E420E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
-		42814AC41BC6299A001E420E /* GameScene.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameScene.swift; sourceTree = "<group>"; };
-		42814AC61BC6299A001E420E /* GameScene.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = GameScene.sks; sourceTree = "<group>"; };
+		42814AC41BC6299A001E420E /* Game.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Game.swift; sourceTree = "<group>"; };
+		42814AC61BC6299A001E420E /* Game.sks */ = {isa = PBXFileReference; lastKnownFileType = file.sks; path = Game.sks; sourceTree = "<group>"; };
 		42814AC81BC6299A001E420E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		42814ACB1BC6299B001E420E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/MainMenu.xib; sourceTree = "<group>"; };
 		42814ACD1BC6299B001E420E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		42814AD21BC6299B001E420E /* blackjackTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = blackjackTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		42814AD21BC6299B001E420E /* Blackjack.temp_caseinsensitive_rename.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Blackjack.temp_caseinsensitive_rename.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		42814AD61BC6299B001E420E /* blackjackTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = blackjackTests.swift; sourceTree = "<group>"; };
 		42814AD81BC6299B001E420E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		42814ADD1BC6299B001E420E /* blackjackUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = blackjackUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		42814ADD1BC6299B001E420E /* Blackjack.temp_caseinsensitive_rename.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Blackjack.temp_caseinsensitive_rename.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		42814AE11BC6299B001E420E /* blackjackUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = blackjackUITests.swift; sourceTree = "<group>"; };
 		42814AE31BC6299B001E420E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		42814AEF1BC62A41001E420E /* Blackjack.temp_caseinsensitive_rename.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Blackjack.temp_caseinsensitive_rename.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -87,9 +90,9 @@
 		42814AC01BC6299A001E420E /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				42814ABF1BC6299A001E420E /* blackjack.app */,
-				42814AD21BC6299B001E420E /* blackjackTests.xctest */,
-				42814ADD1BC6299B001E420E /* blackjackUITests.xctest */,
+				42814ABF1BC6299A001E420E /* Blackjack.temp_caseinsensitive_rename.app */,
+				42814AD21BC6299B001E420E /* Blackjack.temp_caseinsensitive_rename.xctest */,
+				42814ADD1BC6299B001E420E /* Blackjack.temp_caseinsensitive_rename.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -97,9 +100,11 @@
 		42814AC11BC6299A001E420E /* blackjack */ = {
 			isa = PBXGroup;
 			children = (
+				42814AEF1BC62A41001E420E /* Blackjack.temp_caseinsensitive_rename.entitlements */,
 				42814AC21BC6299A001E420E /* AppDelegate.swift */,
-				42814AC41BC6299A001E420E /* GameScene.swift */,
-				42814AC61BC6299A001E420E /* GameScene.sks */,
+				427D5F981BD09BB500FA1A35 /* Card.swift */,
+				42814AC41BC6299A001E420E /* Game.swift */,
+				42814AC61BC6299A001E420E /* Game.sks */,
 				42814AC81BC6299A001E420E /* Assets.xcassets */,
 				42814ACA1BC6299B001E420E /* MainMenu.xib */,
 				42814ACD1BC6299B001E420E /* Info.plist */,
@@ -142,7 +147,7 @@
 			);
 			name = blackjack;
 			productName = blackjack;
-			productReference = 42814ABF1BC6299A001E420E /* blackjack.app */;
+			productReference = 42814ABF1BC6299A001E420E /* Blackjack.temp_caseinsensitive_rename.app */;
 			productType = "com.apple.product-type.application";
 		};
 		42814AD11BC6299B001E420E /* blackjackTests */ = {
@@ -160,7 +165,7 @@
 			);
 			name = blackjackTests;
 			productName = blackjackTests;
-			productReference = 42814AD21BC6299B001E420E /* blackjackTests.xctest */;
+			productReference = 42814AD21BC6299B001E420E /* Blackjack.temp_caseinsensitive_rename.xctest */;
 			productType = "com.apple.product-type.bundle.unit-test";
 		};
 		42814ADC1BC6299B001E420E /* blackjackUITests */ = {
@@ -178,7 +183,7 @@
 			);
 			name = blackjackUITests;
 			productName = blackjackUITests;
-			productReference = 42814ADD1BC6299B001E420E /* blackjackUITests.xctest */;
+			productReference = 42814ADD1BC6299B001E420E /* Blackjack.temp_caseinsensitive_rename.xctest */;
 			productType = "com.apple.product-type.bundle.ui-testing";
 		};
 /* End PBXNativeTarget section */
@@ -192,6 +197,12 @@
 				TargetAttributes = {
 					42814ABE1BC62999001E420E = {
 						CreatedOnToolsVersion = 7.0.1;
+						DevelopmentTeam = 3SS657D8VD;
+						SystemCapabilities = {
+							com.apple.Sandbox = {
+								enabled = 1;
+							};
+						};
 					};
 					42814AD11BC6299B001E420E = {
 						CreatedOnToolsVersion = 7.0.1;
@@ -203,7 +214,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 42814ABA1BC62999001E420E /* Build configuration list for PBXProject "blackjack" */;
+			buildConfigurationList = 42814ABA1BC62999001E420E /* Build configuration list for PBXProject "Blackjack" */;
 			compatibilityVersion = "Xcode 3.2";
 			developmentRegion = English;
 			hasScannedForEncodings = 0;
@@ -229,7 +240,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				42814AC91BC6299A001E420E /* Assets.xcassets in Resources */,
-				42814AC71BC6299A001E420E /* GameScene.sks in Resources */,
+				42814AC71BC6299A001E420E /* Game.sks in Resources */,
 				42814ACC1BC6299B001E420E /* MainMenu.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -255,7 +266,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				42814AC51BC6299A001E420E /* GameScene.swift in Sources */,
+				42814AC51BC6299A001E420E /* Game.swift in Sources */,
+				427D5F991BD09BB500FA1A35 /* Card.swift in Sources */,
 				42814AC31BC6299A001E420E /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -387,11 +399,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = blackjack/Blackjack.temp_caseinsensitive_rename.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = blackjack/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = nu.huw.blackjack;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Blackjack.temp_caseinsensitive_rename;
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -399,11 +414,14 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_ENTITLEMENTS = blackjack/Blackjack.temp_caseinsensitive_rename.entitlements;
+				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = blackjack/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = nu.huw.blackjack;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Blackjack.temp_caseinsensitive_rename;
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};
@@ -416,8 +434,8 @@
 				INFOPLIST_FILE = blackjackTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = nu.huw.blackjackTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/blackjack.app/Contents/MacOS/blackjack";
+				PRODUCT_NAME = Blackjack.temp_caseinsensitive_rename;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Blackjack.temp_caseinsensitive_rename.app/Contents/MacOS/Blackjack.temp_caseinsensitive_rename";
 			};
 			name = Debug;
 		};
@@ -429,8 +447,8 @@
 				INFOPLIST_FILE = blackjackTests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = nu.huw.blackjackTests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/blackjack.app/Contents/MacOS/blackjack";
+				PRODUCT_NAME = Blackjack.temp_caseinsensitive_rename;
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Blackjack.temp_caseinsensitive_rename.app/Contents/MacOS/Blackjack.temp_caseinsensitive_rename";
 			};
 			name = Release;
 		};
@@ -442,7 +460,7 @@
 				INFOPLIST_FILE = blackjackUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = nu.huw.blackjackUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Blackjack.temp_caseinsensitive_rename;
 				TEST_TARGET_NAME = blackjack;
 				USES_XCTRUNNER = YES;
 			};
@@ -455,7 +473,7 @@
 				INFOPLIST_FILE = blackjackUITests/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/../Frameworks @loader_path/../Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = nu.huw.blackjackUITests;
-				PRODUCT_NAME = "$(TARGET_NAME)";
+				PRODUCT_NAME = Blackjack.temp_caseinsensitive_rename;
 				TEST_TARGET_NAME = blackjack;
 				USES_XCTRUNNER = YES;
 			};
@@ -464,7 +482,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		42814ABA1BC62999001E420E /* Build configuration list for PBXProject "blackjack" */ = {
+		42814ABA1BC62999001E420E /* Build configuration list for PBXProject "Blackjack" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				42814AE41BC6299B001E420E /* Debug */,
@@ -480,6 +498,7 @@
 				42814AE81BC6299B001E420E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		42814AE91BC6299B001E420E /* Build configuration list for PBXNativeTarget "blackjackTests" */ = {
 			isa = XCConfigurationList;
@@ -488,6 +507,7 @@
 				42814AEB1BC6299B001E420E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		42814AEC1BC6299B001E420E /* Build configuration list for PBXNativeTarget "blackjackUITests" */ = {
 			isa = XCConfigurationList;
@@ -496,6 +516,7 @@
 				42814AEE1BC6299B001E420E /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

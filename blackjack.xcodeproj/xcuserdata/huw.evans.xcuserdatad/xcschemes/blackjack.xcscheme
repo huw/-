@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "42814ABE1BC62999001E420E"
-               BuildableName = "blackjack.app"
+               BuildableName = "Blackjack.temp_caseinsensitive_rename.app"
                BlueprintName = "blackjack"
-               ReferencedContainer = "container:blackjack.xcodeproj">
+               ReferencedContainer = "container:Blackjack.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "42814AD11BC6299B001E420E"
-               BuildableName = "blackjackTests.xctest"
+               BuildableName = "Blackjack.temp_caseinsensitive_rename.xctest"
                BlueprintName = "blackjackTests"
-               ReferencedContainer = "container:blackjack.xcodeproj">
+               ReferencedContainer = "container:Blackjack.xcodeproj">
             </BuildableReference>
          </TestableReference>
          <TestableReference
@@ -43,9 +43,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "42814ADC1BC6299B001E420E"
-               BuildableName = "blackjackUITests.xctest"
+               BuildableName = "Blackjack.temp_caseinsensitive_rename.xctest"
                BlueprintName = "blackjackUITests"
-               ReferencedContainer = "container:blackjack.xcodeproj">
+               ReferencedContainer = "container:Blackjack.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -53,9 +53,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "42814ABE1BC62999001E420E"
-            BuildableName = "blackjack.app"
+            BuildableName = "Blackjack.temp_caseinsensitive_rename.app"
             BlueprintName = "blackjack"
-            ReferencedContainer = "container:blackjack.xcodeproj">
+            ReferencedContainer = "container:Blackjack.xcodeproj">
          </BuildableReference>
       </MacroExpansion>
       <AdditionalOptions>
@@ -76,9 +76,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "42814ABE1BC62999001E420E"
-            BuildableName = "blackjack.app"
+            BuildableName = "Blackjack.temp_caseinsensitive_rename.app"
             BlueprintName = "blackjack"
-            ReferencedContainer = "container:blackjack.xcodeproj">
+            ReferencedContainer = "container:Blackjack.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
       <AdditionalOptions>
@@ -95,9 +95,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "42814ABE1BC62999001E420E"
-            BuildableName = "blackjack.app"
+            BuildableName = "Blackjack.temp_caseinsensitive_rename.app"
             BlueprintName = "blackjack"
-            ReferencedContainer = "container:blackjack.xcodeproj">
+            ReferencedContainer = "container:Blackjack.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

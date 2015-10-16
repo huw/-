@@ -2,6 +2,6 @@
 <Workspace
    version = "1.0">
    <FileRef
-      location = "self:blackjack.xcodeproj">
+      location = "self:/Users/huw.evans/Google Drive/Software Design/blackjack/Blackjack.xcodeproj">
    </FileRef>
 </Workspace>
