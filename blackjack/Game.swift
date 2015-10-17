@@ -13,15 +13,18 @@ class GameScene: SKScene {
     override func didMoveToView(view: SKView) {
         
         var deck: [Card] = []
+        let num_decks = 1
         
-        for suit_num in 0...3 {
-            
-            let suit = Suit(rawValue: suit_num)!
-            
-            for rank_num in 0...12 {
+        for _ in 1...num_decks {
+            for suit_num in 0...3 {
                 
-                let rank = Rank(rawValue: rank_num)!
-                deck.append(Card(suit: suit, rank: rank))
+                let suit = Suit(rawValue: suit_num)!
+                
+                for rank_num in 0...12 {
+                    
+                    let rank = Rank(rawValue: rank_num)!
+                    deck.append(Card(suit: suit, rank: rank))
+                }
             }
         }
         
