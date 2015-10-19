@@ -10,10 +10,14 @@ import SpriteKit
 import GameplayKit
 
 class GameScene: SKScene {
+    
+    var deck: [Card] = []
+    
+    var i = 0
+    
     override func didMoveToView(view: SKView) {
         
-        var deck: [Card] = []
-        let num_decks = 1
+        let num_decks = 10
         
         for _ in 1...num_decks {
             for suit_num in 0...3 {
@@ -49,5 +53,9 @@ class GameScene: SKScene {
     }
     
     override func update(currentTime: CFTimeInterval) {
+        if i < deck.count {
+            self.addChild(deck[i])
+            i++
+        }
     }
 }

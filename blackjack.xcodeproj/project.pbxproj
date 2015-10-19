@@ -49,7 +49,6 @@
 		42814ADD1BC6299B001E420E /* Blackjack.temp_caseinsensitive_rename.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = Blackjack.temp_caseinsensitive_rename.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		42814AE11BC6299B001E420E /* blackjackUITests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = blackjackUITests.swift; sourceTree = "<group>"; };
 		42814AE31BC6299B001E420E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		42814AEF1BC62A41001E420E /* Blackjack.temp_caseinsensitive_rename.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.xml; path = Blackjack.temp_caseinsensitive_rename.entitlements; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -100,7 +99,6 @@
 		42814AC11BC6299A001E420E /* blackjack */ = {
 			isa = PBXGroup;
 			children = (
-				42814AEF1BC62A41001E420E /* Blackjack.temp_caseinsensitive_rename.entitlements */,
 				42814AC21BC6299A001E420E /* AppDelegate.swift */,
 				427D5F981BD09BB500FA1A35 /* Card.swift */,
 				42814AC41BC6299A001E420E /* Game.swift */,
@@ -200,7 +198,7 @@
 						DevelopmentTeam = 3SS657D8VD;
 						SystemCapabilities = {
 							com.apple.Sandbox = {
-								enabled = 1;
+								enabled = 0;
 							};
 						};
 					};
@@ -399,7 +397,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = blackjack/Blackjack.temp_caseinsensitive_rename.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = blackjack/Info.plist;
@@ -414,7 +411,6 @@
 			isa = XCBuildConfiguration;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
-				CODE_SIGN_ENTITLEMENTS = blackjack/Blackjack.temp_caseinsensitive_rename.entitlements;
 				"CODE_SIGN_IDENTITY[sdk=macosx*]" = "";
 				COMBINE_HIDPI_IMAGES = YES;
 				INFOPLIST_FILE = blackjack/Info.plist;
