@@ -12,14 +12,17 @@ import GameplayKit
 class GameScene: SKScene {
     
     var deck: [Card] = []
-    
-    var i = 0
+    var players: [Player] = []
     
     override func didMoveToView(view: SKView) {
         
-        let num_decks = 10
+        let NUMBER_OF_DECKS = 1
+        let NUMBER_OF_PLAYERS = 5
         
-        for _ in 1...num_decks {
+        // A swift shorthand for making a repeated array
+        players = [Player](count: NUMBER_OF_PLAYERS, repeatedValue: Player())
+        
+        for _ in 1...NUMBER_OF_DECKS {
             for suit_num in 0...3 {
                 
                 let suit = Suit(rawValue: suit_num)!
@@ -47,22 +50,23 @@ class GameScene: SKScene {
         */
         
         deck = GKMersenneTwisterRandomSource.sharedRandom().arrayByShufflingObjectsInArray(deck) as! [Card]
-    }
-    
-    override func mouseDown(theEvent: NSEvent) {
-        if i < deck.count {
-            self.addChild(deck[i])
-            i++
+        
+        // Deal two cards each
+        for _ in 1...2 {
+            for player in players {
+                hit(player)
+            }
         }
     }
     
-    override func keyDown(theEvent: NSEvent) {
-        if i < deck.count {
-            self.addChild(deck[i])
-            i++
+    func hit(player: Player) {
+        if let card = deck.first {
+            
+            // This loop will only run if there are cards remaining (thanks, Swift optionals!)
+            
+            player.hand.append(card)
+            deck.removeAtIndex(0)
+            self.addChild(card)
         }
-    }
-    
-    override func update(currentTime: CFTimeInterval) {
     }
 }

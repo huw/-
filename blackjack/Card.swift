@@ -34,15 +34,6 @@ enum Suit: Int {
             return "♣"
         }
     }
-    
-    /**
-    - returns
-    An appropriate value to be used with Rank.scalar() to determine the position of a card's character in the Unicode table.
-    */
-    
-    func scalar() -> UInt32 {
-        return 0x10 * UInt32(rawValue)
-    }
 }
 
 enum Rank: Int {
@@ -68,25 +59,6 @@ enum Rank: Int {
         default:
             return String(rawValue + 1)
         }
-    }
-    
-    /**
-    For most, we want to add 1 to its declaration order, because there's an empty slot at the front of each row in the Unicode table (except for the Spades row, which has a card back). Once we pass the Jack, though, there's a 'Knight' card, which we can't use. So we add two there.
-    
-    - returns
-    An appropriate hexadecimal number to be used in combination with a Suit.scalar() to determine the position of the card's character in the unicode table.
-    */
-    
-    func scalar() -> UInt32 {
-        let addition: Int
-        
-        if rawValue <= 10 {
-            addition = 1
-        } else {
-            addition = 2
-        }
-        
-        return UInt32(rawValue + addition)
     }
 }
 
