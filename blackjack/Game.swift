@@ -50,12 +50,19 @@ class GameScene: SKScene {
     }
     
     override func mouseDown(theEvent: NSEvent) {
-    }
-    
-    override func update(currentTime: CFTimeInterval) {
         if i < deck.count {
             self.addChild(deck[i])
             i++
         }
+    }
+    
+    override func keyDown(theEvent: NSEvent) {
+        if i < deck.count {
+            self.addChild(deck[i])
+            i++
+        }
+    }
+    
+    override func update(currentTime: CFTimeInterval) {
     }
 }
