@@ -62,7 +62,7 @@ class GameScene: SKScene {
     func hit(player: Player) {
         if let card = deck.first {
             
-            // This loop will only run if there are cards remaining (thanks, Swift optionals!)
+            // This loop will only run if there are cards remaining (Swift optionals!)
             
             player.hand.append(card)
             deck.removeAtIndex(0)
