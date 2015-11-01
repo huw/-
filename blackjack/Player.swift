@@ -6,11 +6,34 @@
 //  Copyright © 2015 Huw. All rights reserved.
 //
 
+import SpriteKit
 import GameplayKit
 
-class Player {
+class Player: SKNode {
     var hand: [Card] = []
     var cash = 500
+    
+    var baseLabel = SKLabelNode()
+    var bonusLabel = SKLabelNode()
+    
+    override init() {
+        super.init()
+        
+        baseLabel.fontName = "San Francisco Display"
+        
+        // bonusLabel should be smaller and a little faded
+        bonusLabel.fontName = "San Francisco Display Medium"
+        bonusLabel.fontSize = 14
+        bonusLabel.fontColor = SKColor(red: 1, green: 1, blue: 1, alpha: 0.7)
+        bonusLabel.position = CGPoint(x: 0, y: -18)
+        
+        self.addChild(baseLabel)
+        self.addChild(bonusLabel)
+    }
+
+    required init?(coder aDecoder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     /**
     Player.score() mostly uses the already-in-place enums for ranking, which is convenient. It iterates through each card in the player's hand, and adds it to an appropriate total. When it encounters an Ace, it adds +1 to the base score, and if it's the first Ace, +10 to a 'bonus' score which can be used later.
