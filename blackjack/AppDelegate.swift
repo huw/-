@@ -18,7 +18,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     
     func applicationDidFinishLaunching(aNotification: NSNotification) {
         /* Pick a size for the scene */
-        if let scene = GameScene(fileNamed:"Game") {
+        if let scene = GameScene(fileNamed: "Game") {
             /* Set the scale mode to scale to fit the window */
             scene.scaleMode = .AspectFill
             

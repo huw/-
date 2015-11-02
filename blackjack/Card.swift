@@ -74,6 +74,8 @@ class Card: SKSpriteNode {
         
         super.init(texture: SKTexture(imageNamed: "Card Back"), color: SKColor.blackColor(), size: CGSize(width: 128, height: 60))
         
+        self.position = CGPoint(x: 9999, y: 9999)
+        
         labelNode.fontName = "San Francisco Display"
         labelNode.fontSize = 50
         labelNode.position = CGPoint(x: 0, y: -20)

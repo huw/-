@@ -9,14 +9,19 @@
 import SpriteKit
 import GameplayKit
 
-class Player: SKNode {
+class Player: SKNode, GKGameModelPlayer {
     var hand: [Card] = []
     var cash = 500
     
     var baseLabel = SKLabelNode()
     var bonusLabel = SKLabelNode()
     
-    override init() {
+    // Required by GameplayKit. Must be unique.
+    let playerId: Int
+    
+    init(id: Int) {
+        playerId = id
+        
         super.init()
         
         baseLabel.fontName = "San Francisco Display"
@@ -66,7 +71,6 @@ class Player: SKNode {
                 
                 fallthrough
             default:
-                // Once again, each rank has a
                 total["Base"]! += card.rank.rawValue + 1
             }
         }
