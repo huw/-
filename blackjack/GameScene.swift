@@ -23,7 +23,10 @@ class GameScene: SKScene {
     var gameModel: Game = Game(decks: 1, players: 1)
     
     override func didMoveToView(view: SKView) {
-        humanPlayer = Int(NUMBER_OF_PLAYERS / 2)
+        
+        // humanPlayer is the _index_ where the human can be found in gameModel.players
+        humanPlayer = Int(round(Float(NUMBER_OF_PLAYERS) / 2))
+        
         gameModel = Game(decks: NUMBER_OF_DECKS, players: NUMBER_OF_PLAYERS)
         
         /*
@@ -38,14 +41,17 @@ class GameScene: SKScene {
         
         let baseUnit = 1280 / NUMBER_OF_PLAYERS // = 256 for 5 players
         
-        for i in 1...gameModel.players!.count {
+        for i in 1...NUMBER_OF_PLAYERS {
             
-            if let player = gameModel.players![i - 1] as? Player {
+            if let player = gameModel.players![i] as? Player {
                 
-                player.position = CGPoint(x: baseUnit * i - (baseUnit / 2), y: 37)
+                player.position = CGPoint(x: baseUnit * (i-1) + (baseUnit / 2), y: 37)
                 self.addChild(player)
             }
         }
+        
+        gameModel.dealer.position = CGPoint(x: 100, y: 650)
+        self.addChild(gameModel.dealer)
         
         for card in gameModel.deck {
             self.addChild(card)
@@ -54,12 +60,49 @@ class GameScene: SKScene {
         /*
         Deal two cards each
         (Traditionally, we shuffle in rounds. So the 1...2 loop comes first)
+        
+        We'd normally subtract 1 from NUMBER_OF_PLAYERS, but we're also dealing with the dealer here. So think of it as `NUMBER_OF_PLAYERS - 1 + 1`
         */
         
         for _ in 1...2 {
-            for i in 1...NUMBER_OF_PLAYERS {
-                gameModel.hit(i)
+            for i in 0...NUMBER_OF_PLAYERS {
+                hit(i)
             }
+        }
+    }
+    
+    func hit(playerId: Int) {
+        
+        let player = gameModel.players![playerId] as! Player
+        
+        // This clause is where we cause the game model to hit the player
+        if let card = gameModel.hit(playerId) {
+            
+            /*
+            Parallelograms tesselate. For this one, every 70 pixels we move up, we have to move it 18 pixels right so that they line up properly. We when subtract 72 pixels horizontally from all of them, so that they roughly center around the scoreboard. Roughly.
+            
+            We also have a special case for the dealer, who resides at the top of the board. For them, we're laying out the cards horizontally, so it's a little easier to align them
+            */
+            
+            let dx: CGFloat
+            let dy: CGFloat
+            if playerId == 0 {
+                dx = 138 * CGFloat(player.hand.count) + 20
+                dy = 0
+            } else {
+                dx = 18 * CGFloat(player.hand.count) - 72
+                dy = 70 * CGFloat(player.hand.count)
+            }
+            
+            card.position = CGPoint(x: player.position.x + dx, y: player.position.y + dy)
+        }
+        
+        // Update score labels
+        let scores = player.score()
+        player.baseLabel.text = "\(scores["Base"]!) points"
+        
+        if scores["Bonus"] > 0 && scores["Bonus"] <= 21 {
+            player.bonusLabel.text = "(\(scores["Base"]! + scores["Bonus"]!) points with ace)"
         }
     }
     
@@ -73,7 +116,7 @@ class GameScene: SKScene {
     
     override func update(currentTime: NSTimeInterval) {
         
-        if humanPlayer == gameModel.currentPlayer + 1 {
+        if humanPlayer == gameModel.currentPlayer {
             
             let h = keys["h"]!
             let s = keys["s"]!
@@ -81,8 +124,9 @@ class GameScene: SKScene {
             // h: Hit, s: Stay
             
             if h || s {
-                if h {
-                    gameModel.hit()
+                
+                if h && (gameModel.activePlayer as! Player).score()["Base"] < 21 {
+                    hit(humanPlayer)
                 } else {
                     gameModel.nextPlayer()
                 }
@@ -90,11 +134,12 @@ class GameScene: SKScene {
                 keys["h"] = false
                 keys["s"] = false
             }
-        } else {
+        } else if gameModel.shouldAIHit()! {
             
-            if gameModel.shouldAIHit()! {
-                gameModel.hit()
-            }
+            hit(gameModel.currentPlayer)
+        } else {
+
+            gameModel.nextPlayer()
         }
     }
 }

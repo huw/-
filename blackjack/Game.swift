@@ -36,15 +36,19 @@ class Game: NSObject, GKGameModel {
     var deck: [Card] = []
     var players: [GKGameModelPlayer]? = []
     var activePlayer = GKGameModelPlayer?()
+    var dealer = Player(id: 0)
     var strategist = GKMinmaxStrategist()
     
-    var currentPlayer: Int
+    // currentPlayer is the _index_ where the activePlayer can be found
+    var currentPlayer: Int = 0
+    
+    // is this a copy? (should we run UI stuff?)
+    var isCopy = false
     
     init(decks NUMBER_OF_DECKS: Int, players NUMBER_OF_PLAYERS: Int) {
         
         deckCount = NUMBER_OF_DECKS
         playerCount = NUMBER_OF_PLAYERS
-        currentPlayer = playerCount - 1
         
         super.init()
         
@@ -91,30 +95,19 @@ class Game: NSObject, GKGameModel {
         
         // Build the list of players. Other layout stuff happens in the view controller.
         
-        for i in 1...playerCount {
-            players!.append(Player(id: i))
+        players!.append(dealer)
+        for i in 0...playerCount - 1 {
+            players!.append(Player(id: i + 1))
         }
     }
     
-    func hit(var playerId: Int = -1) {
+    func hit(playerId: Int) -> Card? {
         
-        if playerId == -1 {
-            playerId = activePlayer!.playerId
-        }
-        
-        let player = players![playerId - 1] as! Player
+        let player = players![playerId] as! Player
         
         if let card = deck.first {
             
             // This loop will only run if there are cards remaining (Swift optionals!)
-            
-            /*
-            Parallelograms tesselate. For this one, every 70 pixels we move up, we have to move it 18 pixels right so that they line up properly. We when subtract 72 pixels horizontally from all of them, so that they roughly center around the scoreboard. Roughly.
-            */
-            
-            let dx = 18 * (CGFloat(player.hand.count) + 1) - 72
-            let dy = 70 * (CGFloat(player.hand.count) + 1)
-            card.position = CGPoint(x: player.position.x + dx, y: player.position.y + dy)
             
             /*
             Add the card to the players hand, then remove the first card from the deck. The conditional at the top asserts that this card _is_ the first one in the deck, so we're safe.
@@ -122,21 +115,18 @@ class Game: NSObject, GKGameModel {
             
             player.hand.append(card)
             deck.removeAtIndex(0)
-            
-            // Update score labels
-            let scores = player.score()
-            player.baseLabel.text = "\(scores["Base"]!) points"
-            
-            if scores["Bonus"] > 0 && scores["Bonus"] <= 21 {
-                player.bonusLabel.text = "(\(scores["Base"]! + scores["Bonus"]!) points with ace)"
-            }
-            
             nextPlayer()
+            
+            return card
         }
+        
+        return nil
     }
     
     func nextPlayer() {
-        if currentPlayer >= playerCount - 1 {
+        
+        // Again, we'd normally subtract 1 from playerCount, but we have a dealer as well
+        if currentPlayer >= playerCount {
             currentPlayer = 0
         } else {
             currentPlayer += 1
@@ -145,18 +135,39 @@ class Game: NSObject, GKGameModel {
         activePlayer = players![currentPlayer]
     }
     
+    /*func shouldAIHit() -> Bool? {
+        
+        if let move = strategist.bestMoveForPlayer(activePlayer!) {
+            return (move as! Move).hit
+        }
+        
+        return nil
+    }*/
+    
     func shouldAIHit() -> Bool? {
         
-        if let move = strategist.bestMoveForPlayer(activePlayer!) as? Move {
-            return move.hit
-        } else {
+        let player = activePlayer as! Player
+        let score = player.score()
+        
+        /*
+        This is a really really long statement, but I kept it in the code because it's efficient and somewhat self-explanatory.
+        
+        It's split down the middle by an OR, which separates the two clauses for AI player (playerId > 0) and dealer (playerId == 0). The AI Player clause calculates a _rough_ statistical probability for this hit to be dangerous. If it's more likely that the hit will keep them under 21 points, then they hit. If it's not, they don't. Easy.
+        
+        The dealer has stricter rules. If they have an ace (score["Bonus"]! > 0), then they need to hit if the score is 17 or under (a.k.a. soft 17). Otherwise, they must also hit when their base score is under 17 (and they have no ace).
+        */
+        
+        if (player.playerId > 0 && Double(score["Base"]!) + 6 <= 21) || (player.playerId == 0 && ((score["Bonus"]! > 0 && score["Base"]! + score["Bonus"]! <= 17) || score["Base"]! < 17)) {
             return true
         }
+        
+        return false
     }
     
     func copyWithZone(zone: NSZone) -> AnyObject {
         let copy = Game(decks: deckCount, players: playerCount)
         copy.setGameModel(self)
+        copy.isCopy = true
         return copy
     }
     
@@ -171,10 +182,11 @@ class Game: NSObject, GKGameModel {
     
     func gameModelUpdatesForPlayer(player: GKGameModelPlayer) -> [GKGameModelUpdate]? {
         if let playerObject = player as? Player {
-            if playerObject.score()["Base"] >= 21 {
-                return nil
+            if playerObject.score()["Base"] < 21 {
+                return [Move(hit: true), Move(hit: false)]
+            } else {
+                return [Move(hit: false)]
             }
-            return [Move(hit: true), Move(hit: false)]
         }
         
         return nil
@@ -183,9 +195,8 @@ class Game: NSObject, GKGameModel {
     func applyGameModelUpdate(gameModelUpdate: GKGameModelUpdate) {
         if let move = gameModelUpdate as? Move {
             if move.hit {
-                hit()
+                hit(currentPlayer)
             }
-            nextPlayer()
         }
     }
     
