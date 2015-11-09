@@ -28,16 +28,15 @@ class Move: NSObject, GKGameModelUpdate {
     }
 }
 
-class Game: NSObject, GKGameModel {
+class Game {
     
     let deckCount: Int
     let playerCount: Int
     
     var deck: [Card] = []
-    var players: [GKGameModelPlayer]? = []
-    var activePlayer = GKGameModelPlayer?()
+    var players: [Player] = []
+    var activePlayer: Player
     var dealer = Player(id: 0)
-    var strategist = GKMinmaxStrategist()
     
     // currentPlayer is the _index_ where the activePlayer can be found
     var currentPlayer: Int = 0
@@ -49,18 +48,6 @@ class Game: NSObject, GKGameModel {
         
         deckCount = NUMBER_OF_DECKS
         playerCount = NUMBER_OF_PLAYERS
-        
-        super.init()
-        
-        /*
-        We only really need to look three turns ahead to decide whether hitting is a good idea right now. I'm not really sure if we need to look more than 1 turn ahead, but I guess it makes a difference.
-        
-        randomSource is a function which determines how we randomly settle situations where the score of a move is equal. We can use a simple random here.
-        */
-        
-        strategist.maxLookAheadDepth = 3
-        strategist.randomSource = GKARC4RandomSource()
-        strategist.gameModel = self
         
         // Build the deck. 1 card per rank per suit per deck.
         
@@ -94,16 +81,14 @@ class Game: NSObject, GKGameModel {
         deck = GKMersenneTwisterRandomSource.sharedRandom().arrayByShufflingObjectsInArray(deck) as! [Card]
         
         // Build the list of players. Other layout stuff happens in the view controller.
-        
-        players!.append(dealer)
         for i in 0...playerCount - 1 {
-            players!.append(Player(id: i + 1))
+            players.append(Player(id: i + 1))
         }
+        
+        activePlayer = players[currentPlayer]
     }
     
-    func hit(playerId: Int) -> Card? {
-        
-        let player = players![playerId] as! Player
+    func hit(player: Player) -> Card? {
         
         if let card = deck.first {
             
@@ -114,6 +99,10 @@ class Game: NSObject, GKGameModel {
             */
             
             player.hand.append(card)
+            
+            // If the score is over 21, score()["Base"] will return zero. Thus the player is bust.
+            player.bust = player.score()["Base"]! == 0
+            
             deck.removeAtIndex(0)
             nextPlayer()
             
@@ -124,95 +113,38 @@ class Game: NSObject, GKGameModel {
     }
     
     func nextPlayer() {
-        
-        // Again, we'd normally subtract 1 from playerCount, but we have a dealer as well
-        if currentPlayer >= playerCount {
+        if currentPlayer >= playerCount - 1 {
             currentPlayer = 0
         } else {
             currentPlayer += 1
         }
         
-        activePlayer = players![currentPlayer]
+        activePlayer = players[currentPlayer]
     }
-    
-    /*func shouldAIHit() -> Bool? {
-        
-        if let move = strategist.bestMoveForPlayer(activePlayer!) {
-            return (move as! Move).hit
-        }
-        
-        return nil
-    }*/
-    
+
     func shouldAIHit() -> Bool? {
         
-        let player = activePlayer as! Player
-        let score = player.score()
+        let score = activePlayer.score()
         
         /*
-        This is a really really long statement, but I kept it in the code because it's efficient and somewhat self-explanatory.
-        
-        It's split down the middle by an OR, which separates the two clauses for AI player (playerId > 0) and dealer (playerId == 0). The AI Player clause calculates a _rough_ statistical probability for this hit to be dangerous. If it's more likely that the hit will keep them under 21 points, then they hit. If it's not, they don't. Easy.
-        
-        The dealer has stricter rules. If they have an ace (score["Bonus"]! > 0), then they need to hit if the score is 17 or under (a.k.a. soft 17). Otherwise, they must also hit when their base score is under 17 (and they have no ace).
+        The average of the possible card values comes out to be something like 6.53. If we add the average to the current score, and it comes out to be more than 21, then we don't want to hit, because that means that there's a greater probability of failure.
         */
         
-        if (player.playerId > 0 && Double(score["Base"]!) + 6 <= 21) || (player.playerId == 0 && ((score["Bonus"]! > 0 && score["Base"]! + score["Bonus"]! <= 17) || score["Base"]! < 17)) {
-            return true
-        }
-        
-        return false
+        return score["Base"]! != 0 && Double(score["Base"]!) + 6 <= 21
     }
     
-    func copyWithZone(zone: NSZone) -> AnyObject {
-        let copy = Game(decks: deckCount, players: playerCount)
-        copy.setGameModel(self)
-        copy.isCopy = true
-        return copy
-    }
-    
-    func setGameModel(gameModel: GKGameModel) {
-        if let game = gameModel as? Game {
-            players = game.players
-            deck = game.deck
-            currentPlayer = game.currentPlayer
-            activePlayer = game.players![game.currentPlayer]
-        }
-    }
-    
-    func gameModelUpdatesForPlayer(player: GKGameModelPlayer) -> [GKGameModelUpdate]? {
-        if let playerObject = player as? Player {
-            if playerObject.score()["Base"] < 21 {
-                return [Move(hit: true), Move(hit: false)]
-            } else {
-                return [Move(hit: false)]
-            }
-        }
-        
-        return nil
-    }
-    
-    func applyGameModelUpdate(gameModelUpdate: GKGameModelUpdate) {
-        if let move = gameModelUpdate as? Move {
-            if move.hit {
-                hit(currentPlayer)
-            }
-        }
-    }
-    
-    func scoreForPlayer(player: GKGameModelPlayer) -> Int {
-        if let playerObject = player as? Player {
+    func isGameOver() -> Bool {
+        for player in players {
             
-            let score = playerObject.score()
-            let fullScore = score["Base"]! + score["Bonus"]!
+            /*
+            If a single player hasn't gone bust or decided to stand, then they can still hit, so we must continue the loop. Otherwise, the game actually is over and we can run that stuff.
+            */
             
-            if fullScore <= 21 {
-                return fullScore
-            } else if score["Base"] <= 21 {
-                return score["Base"]!
+            if !player.bust && !player.standing {
+                return false
             }
         }
         
-        return 0
+        return true
     }
 }

@@ -12,6 +12,8 @@ import GameplayKit
 class Player: SKNode, GKGameModelPlayer {
     var hand: [Card] = []
     var cash = 500
+    var standing = false
+    var bust = false
     
     var baseLabel = SKLabelNode()
     var bonusLabel = SKLabelNode()
@@ -75,6 +77,24 @@ class Player: SKNode, GKGameModelPlayer {
             }
         }
         
+        // Give the player 0 if they've gone bust
+        if total["Base"] > 21 {
+            return ["Base": 0, "Bonus": 0]
+        } else if total["Base"]! + total["Bonus"]! > 21 {
+            return ["Base": total["Base"]!, "Bonus": 0]
+        }
+        
         return total
+    }
+    
+    func blackjack() -> Bool {
+        let playerScore = score()
+        return (playerScore["Base"]! + playerScore["Bonus"]!) == 21 && hand.count == 2
+    }
+    
+    func reset() {
+        hand.removeAll()
+        standing = false
+        bust = false
     }
 }
