@@ -17,6 +17,7 @@ class Player: SKNode, GKGameModelPlayer {
     
     var baseLabel = SKLabelNode()
     var bonusLabel = SKLabelNode()
+    var cashLabel = SKLabelNode()
     
     // Required by GameplayKit. Must be unique.
     let playerId: Int
@@ -34,8 +35,14 @@ class Player: SKNode, GKGameModelPlayer {
         bonusLabel.fontColor = SKColor(red: 1, green: 1, blue: 1, alpha: 0.7)
         bonusLabel.position = CGPoint(x: 0, y: -18)
         
+        cashLabel.fontName = "San Francisco Display Bold"
+        cashLabel.fontSize = 14
+        cashLabel.position = CGPoint(x: 0, y: -34)
+        cashLabel.text = "$\(cash - 25)"
+        
         self.addChild(baseLabel)
         self.addChild(bonusLabel)
+        self.addChild(cashLabel)
     }
 
     required init?(coder aDecoder: NSCoder) {
@@ -96,5 +103,6 @@ class Player: SKNode, GKGameModelPlayer {
         hand.removeAll()
         standing = false
         bust = false
+        cashLabel.text = "$\(cash)"
     }
 }

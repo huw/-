@@ -150,6 +150,9 @@ class GameScene: SKScene {
                     // So a $25 bet will return $75
                     if player.blackjack() {
                         player.cash += 25
+                        displayMessage(player, message: "+$75")
+                    } else {
+                        displayMessage(player, message: "+$50")
                     }
                     player.cash += 50
                 }
@@ -173,15 +176,16 @@ class GameScene: SKScene {
                     // The player has won
                     if player.blackjack() {
                         player.cash += 25
+                        displayMessage(player, message: "+$75")
+                    } else {
+                        displayMessage(player, message: "+$50")
                     }
                     player.cash += 50
                     
                 } else if (player.blackjack() && dealer.blackjack()) || (!dealer.blackjack() && playerBonus == dealerBonus) {
                     // We have tied. Return bet.
                     player.cash += 25
-                    
-                } else {
-                    // The dealer has won
+                    displayMessage(player, message: "+$25")
                     
                 }
             }
@@ -222,6 +226,17 @@ class GameScene: SKScene {
         }
         
         hit(-1)
+    }
+    
+    func displayMessage(player: SKNode, message: String) {
+        let labelNode = SKLabelNode(fontNamed: "San Francisco Display Bold")
+        
+        labelNode.text = message
+        
+        let moveUpAndFade = SKAction.group([SKAction.moveByX(0, y: 50, duration: 1), SKAction.fadeOutWithDuration(1)])
+        
+        player.addChild(labelNode)
+        labelNode.runAction(moveUpAndFade)
     }
     
     override func keyDown(e: NSEvent) {
