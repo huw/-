@@ -45,6 +45,9 @@ class GameScene: SKScene {
             
             let player = gameModel.players[i]
             
+            // Add $500 initial
+            player.cash = 500
+            
             player.position = CGPoint(x: baseUnit * (i) + (baseUnit / 2), y: 37)
             self.addChild(player)
         }
@@ -124,17 +127,19 @@ class GameScene: SKScene {
     func gameOver() {
         
         let dealer = gameModel.dealer
-        let dealerScore = dealer.score()
-        let dealerBonus = dealerScore["Base"]! + dealerScore["Bonus"]!
         
         /*
         Now that the game's over, we find out what the dealer's final score is.
         Basically, the dealer keeps hitting so long as they haven't gone bust, and their score is under 17. If they get a soft 17, we don't consider it—we're just using their base score for now.
         */
-        while !dealer.bust && dealerScore["Base"]! < 17 {
+        
+        while !dealer.bust && dealer.score()["Base"]! < 17 {
             
             hit(-1)
         }
+        
+        let dealerScore = dealer.score()
+        let dealerBonus = dealerScore["Base"]! + dealerScore["Bonus"]!
         
         for player in gameModel.players {
             
@@ -144,7 +149,7 @@ class GameScene: SKScene {
             
             if dealer.bust {
                 
-                if player.standing && !player.bust {
+                if player.standing && !player.bust && player.cash > 0 {
                     
                     // A blackjack will pay 3:2
                     // So a $25 bet will return $75
@@ -213,15 +218,21 @@ class GameScene: SKScene {
             self.addChild(card)
         }
         
-        // Steal $25 from each player
+        // Steal $25 from each player if they can play
         for player in gameModel.players {
-            player.cash -= 25
+            if player.cash >= 25 {
+                player.cash -= 25
+            }
         }
         
         // Redeal
         for _ in 1...2 {
             for i in (0...NUMBER_OF_PLAYERS - 1).reverse() {
-                hit(i)
+                
+                // Only hit to players who can still play
+                if gameModel.players[i].cash > 0 {
+                    hit(i)
+                }
             }
         }
         

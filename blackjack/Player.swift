@@ -11,7 +11,7 @@ import GameplayKit
 
 class Player: SKNode, GKGameModelPlayer {
     var hand: [Card] = []
-    var cash = 500
+    var cash = 0
     var standing = false
     var bust = false
     
@@ -38,7 +38,10 @@ class Player: SKNode, GKGameModelPlayer {
         cashLabel.fontName = "San Francisco Display Bold"
         cashLabel.fontSize = 14
         cashLabel.position = CGPoint(x: 0, y: -34)
-        cashLabel.text = "$\(cash - 25)"
+        
+        if playerId != 0 {
+            cashLabel.text = "$\(500)"
+        }
         
         self.addChild(baseLabel)
         self.addChild(bonusLabel)
@@ -103,6 +106,10 @@ class Player: SKNode, GKGameModelPlayer {
         hand.removeAll()
         standing = false
         bust = false
-        cashLabel.text = "$\(cash)"
+        if cash > 0 {
+            cashLabel.text = "$\(cash)"
+        } else {
+            cashLabel.text = ""
+        }
     }
 }

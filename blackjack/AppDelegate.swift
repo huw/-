@@ -23,9 +23,6 @@ class AppDelegate: NSObject, NSApplicationDelegate {
             scene.scaleMode = .AspectFill
             
             self.skView!.presentScene(scene)
-            
-            self.skView!.showsFPS = true
-            self.skView!.showsNodeCount = true
         }
     }
     

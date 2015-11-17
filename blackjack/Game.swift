@@ -91,7 +91,7 @@ class Game {
     func hit(player: Player) -> Card? {
         
         if let card = deck.first {
-            
+                
             // This loop will only run if there are cards remaining (Swift optionals!)
             
             /*
@@ -127,10 +127,31 @@ class Game {
         let score = activePlayer.score()
         
         /*
-        The average of the possible card values comes out to be something like 6.53. If we add the average to the current score, and it comes out to be more than 21, then we don't want to hit, because that means that there's a greater probability of failure.
+        The average of the possible card values comes out to be something like 6.53. If we add the average to the current score, and it comes out to be more than 21, then we don't want to hit, because that means that there's a greater probability of failure. This can be simplified as `if score <= 15`.
+        
+        We split this loop a little counter-intuitively.
+        
+        Firstly, anything above 19 shouldn't hit. Statistically, you're more likely to break a number over 21, which is dangerous. Also, if their score is 0, then they've definitely gone bust (and shouldn't be hitting).
+        
+        Once that's done, if the player has an ace counted as 11, they can risk another hit. We set up a 50% chance of hitting or not in this case with `nextBool()`, a property of GKRandom.
+        
+        If they don't have an ace counted as 11, then they should only hit if their score is less than 15 (see above).
         */
         
-        return score["Base"]! != 0 && Double(score["Base"]!) + 6 <= 21
+        let bonus = score["Base"]! + score["Bonus"]!
+        
+        if bonus > 0 && bonus < 19 {
+
+            if score["Bonus"]! > 0 && GKARC4RandomSource().nextBool() {
+                
+                return true
+            } else if bonus <= 15 {
+                
+                return true
+            }
+        }
+        
+        return false
     }
     
     func isGameOver() -> Bool {
