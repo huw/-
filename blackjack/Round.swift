@@ -28,10 +28,7 @@ class Move: NSObject, GKGameModelUpdate {
     }
 }
 
-class Game {
-    
-    let deckCount: Int
-    let playerCount: Int
+class Round {
     
     var deck: [Card] = []
     var players: [Player] = []
@@ -44,14 +41,11 @@ class Game {
     // is this a copy? (should we run UI stuff?)
     var isCopy = false
     
-    init(decks NUMBER_OF_DECKS: Int, players NUMBER_OF_PLAYERS: Int) {
-        
-        deckCount = NUMBER_OF_DECKS
-        playerCount = NUMBER_OF_PLAYERS
+    init(players: [Player], dealer: Player) {
         
         // Build the deck. 1 card per rank per suit per deck.
         
-        for _ in 1...deckCount {
+        for _ in 1...NUMBER_OF_DECKS {
             for suit_num in 0...3 {
                 
                 let suit = Suit(rawValue: suit_num)!
@@ -80,12 +74,24 @@ class Game {
         
         deck = GKMersenneTwisterRandomSource.sharedRandom().arrayByShufflingObjectsInArray(deck) as! [Card]
         
-        // Build the list of players. Other layout stuff happens in the view controller.
-        for i in 0...playerCount - 1 {
-            players.append(Player(id: i + 1))
-        }
+        self.players = players
+        self.dealer = dealer
         
         activePlayer = players[currentPlayer]
+    }
+    
+    /**
+    This convenience initialiser is used on the first run. It builds its own list of players and a dealer, and passes it to the normal initialiser for it to do its thing. It is cleaner to have the first init use a convenience initialiser (when you'd ideally have the first init using the main one), because this way we don't have to regenerate a list of players each time we want to create a new round.
+    */
+    
+    convenience init() {
+        var tempPlayers: [Player] = []
+        
+        for i in 0...NUMBER_OF_PLAYERS - 1 {
+            tempPlayers.append(Player(id: i + 1))
+        }
+        
+        self.init(players: tempPlayers, dealer: Player(id: 0))
     }
     
     func hit(player: Player) -> Card? {
@@ -100,9 +106,6 @@ class Game {
             
             player.hand.append(card)
             
-            // If the score is over 21, score()["Base"] will return zero. Thus the player is bust.
-            player.bust = player.score()["Base"]! == 0
-            
             deck.removeAtIndex(0)
             nextPlayer()
             
@@ -113,7 +116,7 @@ class Game {
     }
     
     func nextPlayer() {
-        if currentPlayer >= playerCount - 1 {
+        if currentPlayer >= NUMBER_OF_PLAYERS - 1 {
             currentPlayer = 0
         } else {
             currentPlayer += 1
@@ -138,14 +141,12 @@ class Game {
         If they don't have an ace counted as 11, then they should only hit if their score is less than 15 (see above).
         */
         
-        let bonus = score["Base"]! + score["Bonus"]!
-        
-        if bonus > 0 && bonus < 19 {
+        if score > 0 && score < 19 {
 
-            if score["Bonus"]! > 0 && GKARC4RandomSource().nextBool() {
+            if activePlayer.scoreBonus() > 0 && GKARC4RandomSource().nextBool() {
                 
                 return true
-            } else if bonus <= 15 {
+            } else if score <= 15 {
                 
                 return true
             }

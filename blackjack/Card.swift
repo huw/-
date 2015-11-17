@@ -79,7 +79,7 @@ class Card: SKSpriteNode {
         labelNode.fontName = "San Francisco Display"
         labelNode.fontSize = 50
         labelNode.position = CGPoint(x: 0, y: -20)
-        labelNode.text = "\(self.rank.value())\(self.suit.symbol())"
+        labelNode.text = self.description
         self.addChild(labelNode)
     }
 

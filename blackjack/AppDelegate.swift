@@ -17,11 +17,10 @@ class AppDelegate: NSObject, NSApplicationDelegate {
     @IBOutlet weak var skView: SKView!
     
     func applicationDidFinishLaunching(aNotification: NSNotification) {
-        /* Pick a size for the scene */
-        if let scene = GameScene(fileNamed: "Game") {
-            /* Set the scale mode to scale to fit the window */
+
+        if let scene = Scene(fileNamed: "Scene") {
+
             scene.scaleMode = .AspectFill
-            
             self.skView!.presentScene(scene)
         }
     }
