@@ -30,6 +30,10 @@ class Player: SKNode {
         return scoreBase() > 21
     }
     
+    var stillPlaying: Bool {
+        return !standing && !bust && !bankrupt
+    }
+    
     var baseLabel = SKLabelNode()
     var bonusLabel = SKLabelNode()
     var cashLabel = SKLabelNode()
@@ -125,5 +129,7 @@ class Player: SKNode {
         } else {
             cashLabel.text = "$\(cash)"
         }
+        baseLabel.text = "0 points"
+        bonusLabel.text = ""
     }
 }

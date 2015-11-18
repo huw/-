@@ -45,10 +45,6 @@ class Scene: SKScene {
         thisRound.dealer.position = CGPoint(x: 100, y: 650)
         self.addChild(thisRound.dealer)
         
-        for card in thisRound.deck {
-            self.addChild(card)
-        }
-        
         deal()
     }
     
@@ -72,10 +68,6 @@ class Scene: SKScene {
             if let card = child as? Card {
                 card.removeFromParent()
             }
-        }
-        
-        for card in thisRound.deck {
-            self.addChild(card)
         }
         
         deal()
@@ -130,6 +122,7 @@ class Scene: SKScene {
             }
             
             card.position = CGPoint(x: player.position.x + dx, y: player.position.y + dy)
+            self.addChild(card)
         }
         
         if !player.bust {
@@ -138,51 +131,65 @@ class Scene: SKScene {
             player.baseLabel.text = "0 points"
         }
         
-        if player.scoreBonus() > 0 {
+        if player.scoreBonus() > 0 && player.scoreBase() + 10 <= 21 {
             player.bonusLabel.text = "(\(player.score()) points with ace)"
         } else {
             player.bonusLabel.text = ""
         }
     }
     
-    func gameOver() {
+    func gameOver() -> Bool {
         
+        /*
+        If all of the players are bankrupt, then kill the game (i.e. return false so no more of this loop can run)
+        */
+        
+        var numBankrupt = 0
+        
+        for player in thisRound.players {
+            if player.bankrupt {
+                numBankrupt += 1
+            }
+        }
+        
+        if numBankrupt == NUMBER_OF_PLAYERS {
+            return false
+        }
+            
         let dealer = thisRound.dealer
         
         /*
         Now that the game's over, we find out what the dealer's final score is.
-        Basically, the dealer keeps hitting so long as they haven't gone bust, and their score is under 17. If they get a soft 17, we don't consider it—we're just using their base score for now.
+        Basically, the dealer keeps hitting so long as they haven't gone bust, and their score is under 17. If they get a soft 17, they're still allowed to stand.
         */
         
-        while !dealer.bust && dealer.scoreBase() < 17 {
+        while !dealer.bust && dealer.score() < 17 {
             
             hit(thisRound.dealer)
         }
         
         let dealerScore = dealer.score()
         
-        for player in thisRound.players {
+        if dealer.bust {
             
-            /*
-            If the dealer has gone bust, then the player wins if they're still standing and haven't gone bust themselves.
-            */
-            
-            if dealer.bust {
-                
-                if player.standing && !player.bust && player.cash > 0 {
+            for player in thisRound.players {
+                if player.standing && !player.bust && !player.bankrupt {
                     
-                    // A blackjack will pay 3:2
-                    // So a $25 bet will return $75
+                    player.cash += 50
+                    
                     if player.blackjack {
+                        
                         player.cash += 25
                         displayMessage(player, "+$75")
                     } else {
                         displayMessage(player, "+$50")
                     }
-                    player.cash += 50
                 }
-            } else {
-
+            }
+        } else {
+            
+            for player in thisRound.players {
+            
                 let playerScore = player.score()
                 
                 /*
@@ -198,27 +205,30 @@ class Scene: SKScene {
                 */
                 
                 if (player.blackjack && !dealer.blackjack) || playerScore > dealerScore {
-                    // The player has won
+
+                    player.cash += 50
+                    
                     if player.blackjack {
+                        
                         player.cash += 25
                         displayMessage(player, "+$75")
                     } else {
                         displayMessage(player, "+$50")
                     }
-                    player.cash += 50
                     
                 } else if (player.blackjack && dealer.blackjack) || (!dealer.blackjack && playerScore == dealerScore) {
-                    // We have tied. Return bet.
+
                     player.cash += 25
                     displayMessage(player, "+$25")
-                    
                 }
             }
         }
-        
+
         resetGame()
+        
+        return true
     }
-    
+
     /**
     This function will display a message on the screen that floats up the screen and disappears over a second. The message will simultaneously move upward and fade, before detaching itself from its parent.
     
@@ -228,10 +238,11 @@ class Scene: SKScene {
     */
     
     func displayMessage(node: SKNode, _ message: String) {
+        
         let label = SKLabelNode(fontNamed: "San Francisco Display Bold")
         label.text = message
         
-        let moveUpAndFade = SKAction.group([SKAction.moveByX(0, y: 50, duration: 1), SKAction.fadeOutWithDuration(1)])
+        let moveUpAndFade = SKAction.group([SKAction.moveByX(0, y: 50, duration: 0.7), SKAction.fadeOutWithDuration(0.7)])
         let selfDestruct = SKAction.removeFromParent()
         
         node.addChild(label)
@@ -246,59 +257,60 @@ class Scene: SKScene {
         }
     }
     
+    /**
+    The update loop determines the player actions. If the current player is still in the game, then we determine what move they should make (either based on AI or human input). If they're not, we move on and test to see if the game is over.
+    */
+    
     override func update(currentTime: NSTimeInterval) {
         
-        /*
-        Here we determine what happens on this update (usually once per frame or something).
-        
-        First we make sure that the player's allowed to move—they must not be standing _or_ bust.
-        
-        When the human player is the current player, we test for keypresses. Then we make the right action, depending on whether they wanted to hit or stand.
-        
-        If it's not the human player, we run `shouldAIHit()` to determine if the current player should make the hit, and act appropriately.
-        */
-        
-        let player = thisRound.activePlayer
-        
-        if !player.standing && !player.bust {
-            if humanPlayerIndex == thisRound.currentPlayer {
+        while !humanPlayer.stillPlaying || (keys["s"]! || keys["h"]! || humanPlayer.score() == 21) {
+            let player = thisRound.activePlayer
+            
+            if player.stillPlaying {
                 
-                let h = keys["h"]!
-                let s = keys["s"]!
-                
-                // h: Hit, s: Stand
-                
-                if h || s {
+                let hitting: Bool
+                let standing: Bool
                     
-                    if h {
+                if player == humanPlayer {
+                    
+                    // Automatic win, so stand
+                    if player.score() == 21 {
                         
-                        hit(humanPlayer)
+                        hitting = false
+                        standing = true
                     } else {
                         
-                        player.standing = true
-                        thisRound.nextPlayer()
+                        hitting = keys["h"]!
+                        standing = keys["s"]!
                     }
                     
                     keys["h"] = false
                     keys["s"] = false
+                } else {
+                    
+                    let action = thisRound.shouldPlayerHit(player)
+                    
+                    hitting = action
+                    standing = !action
                 }
-            } else if thisRound.shouldAIHit()! {
                 
-                hit(thisRound.activePlayer)
+                if standing || player.score() == 21 {
+                    
+                    player.standing = true
+                    thisRound.nextPlayer()
+                } else if hitting {
+                    hit(player)
+                }
+                
             } else {
-
-                player.standing = true
-                thisRound.nextPlayer()
-            }
-        } else {
-            thisRound.nextPlayer()
-        }
-        
-        if thisRound.currentPlayer == 0 {
-            
-            if thisRound.isGameOver() {
                 
-                gameOver()
+                thisRound.nextPlayer()
+                
+                if thisRound.isGameOver() {
+                    gameOver()
+                    
+                    break
+                }
             }
         }
     }

@@ -20,7 +20,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
         if let scene = Scene(fileNamed: "Scene") {
 
-            scene.scaleMode = .AspectFill
+            scene.scaleMode = .AspectFit
             self.skView!.presentScene(scene)
         }
     }

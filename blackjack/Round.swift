@@ -6,40 +6,20 @@
 //  Copyright © 2015 Huw. All rights reserved.
 //
 
-import Foundation
-
-//
-//  GameScene.swift
-//  blackjack
-//
-//  Created by Huw on 2015-10-08.
-//  Copyright (c) 2015 Huw. All rights reserved.
-//
-
 import SpriteKit
 import GameplayKit
-
-class Move: NSObject, GKGameModelUpdate {
-    var value: Int = 0
-    let hit: Bool
-    
-    init(hit: Bool) {
-        self.hit = hit
-    }
-}
 
 class Round {
     
     var deck: [Card] = []
     var players: [Player] = []
-    var activePlayer: Player
     var dealer = Player(id: 0)
     
-    // currentPlayer is the _index_ where the activePlayer can be found
-    var currentPlayer: Int = 0
+    var activePlayerIndex: Int = 0
     
-    // is this a copy? (should we run UI stuff?)
-    var isCopy = false
+    var activePlayer: Player {
+        return players[activePlayerIndex]
+    }
     
     init(players: [Player], dealer: Player) {
         
@@ -76,8 +56,6 @@ class Round {
         
         self.players = players
         self.dealer = dealer
-        
-        activePlayer = players[currentPlayer]
     }
     
     /**
@@ -98,8 +76,6 @@ class Round {
         
         if let card = deck.first {
                 
-            // This loop will only run if there are cards remaining (Swift optionals!)
-            
             /*
             Add the card to the players hand, then remove the first card from the deck. The conditional at the top asserts that this card _is_ the first one in the deck, so we're safe.
             */
@@ -116,18 +92,17 @@ class Round {
     }
     
     func nextPlayer() {
-        if currentPlayer >= NUMBER_OF_PLAYERS - 1 {
-            currentPlayer = 0
-        } else {
-            currentPlayer += 1
-        }
         
-        activePlayer = players[currentPlayer]
+        if activePlayerIndex >= NUMBER_OF_PLAYERS - 1 {
+            activePlayerIndex = 0
+        } else {
+            activePlayerIndex += 1
+        }
     }
 
-    func shouldAIHit() -> Bool? {
+    func shouldPlayerHit(player: Player) -> Bool {
         
-        let score = activePlayer.score()
+        let score = player.score()
         
         /*
         The average of the possible card values comes out to be something like 6.53. If we add the average to the current score, and it comes out to be more than 21, then we don't want to hit, because that means that there's a greater probability of failure. This can be simplified as `if score <= 15`.
@@ -143,7 +118,7 @@ class Round {
         
         if score > 0 && score < 19 {
 
-            if activePlayer.scoreBonus() > 0 && GKARC4RandomSource().nextBool() {
+            if player.scoreBonus() > 0 && GKARC4RandomSource().nextBool() {
                 
                 return true
             } else if score <= 15 {
@@ -162,7 +137,7 @@ class Round {
             If a single player hasn't gone bust or decided to stand, then they can still hit, so we must continue the loop. Otherwise, the game actually is over and we can run that stuff.
             */
             
-            if !player.bust && !player.standing {
+            if player.stillPlaying {
                 return false
             }
         }
