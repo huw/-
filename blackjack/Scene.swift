@@ -23,16 +23,18 @@ let NUMBER_OF_PLAYERS = 5
 
 class Scene: SKScene {
     
-    let humanPlayerIndex = Int(round(Float(NUMBER_OF_PLAYERS) / 2)) - 1
-    
     var thisRound = Round()
     
+    let humanPlayerIndex = Int(round(Float(NUMBER_OF_PLAYERS) / 2)) - 1
     var humanPlayer: Player {
         return thisRound.players[humanPlayerIndex]
     }
     
+    var isFirstRoundOver = false
+    let playerHighlightArrow = SKSpriteNode(imageNamed: "Triangle")
+    
     /**
-    This will evenly space out the players along the bottom of the screen, depending on how many there are. It will also add the dealer to the top right corner, and add the cards to the screen (although they're all off-screen until players hit)
+    This will evenly space out the players along the bottom of the screen, depending on how many there are. It will also add the dealer to the top right corner, and add the cards to the screen (although they're all off-screen until players hit). We also let the player know who they are with a little arrow.
     */
     
     func layOutGame() {
@@ -45,6 +47,10 @@ class Scene: SKScene {
             
             self.addChild(player)
         }
+        
+        playerHighlightArrow.position = CGPoint(x: humanPlayer.position.x - 20, y: humanPlayer.position.y + 200)
+        playerHighlightArrow.size = CGSize(width: 85, height: 40)
+        self.addChild(playerHighlightArrow)
         
         thisRound.dealer.position = CGPoint(x: 100, y: 650)
         self.addChild(thisRound.dealer)
@@ -346,6 +352,18 @@ class Scene: SKScene {
                 
                 if thisRound.isGameOver() {
                     gameOver()
+                    
+                    if !isFirstRoundOver {
+                        
+                        let fadeOut = SKAction.sequence([SKAction.fadeOutWithDuration(0.7), SKAction.removeFromParent()])
+                        
+                        childNodeWithName("Action Label")!.runAction(fadeOut)
+                        childNodeWithName("Ace Risk Label")!.runAction(fadeOut)
+                        childNodeWithName("Dealer Hit Label")!.runAction(fadeOut)
+                        playerHighlightArrow.runAction(fadeOut)
+                        
+                        isFirstRoundOver = true
+                    }
                     
                     break
                 }
