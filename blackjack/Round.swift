@@ -16,10 +16,12 @@ class Round {
     var dealer = Player(id: 0)
     
     var activePlayerIndex: Int = 0
-    
     var activePlayer: Player {
         return players[activePlayerIndex]
     }
+    
+    var aceRiskFactor = 50
+    var dealerHitsOnSoft17 = true
     
     init(players: [Player], dealer: Player) {
         
@@ -99,8 +101,13 @@ class Round {
             activePlayerIndex += 1
         }
     }
+    
+    /**
+    - returns
+    Three Bools, which correspond to 'hitting', 'standing', and 'doubling down' respectively. To be processed by the player action loop in Scene.
+    */
 
-    func shouldPlayerHit(player: Player) -> Bool {
+    func AIActionChoice(player: Player) -> (Bool, Bool, Bool) {
         
         let score = player.score()
         
@@ -109,25 +116,31 @@ class Round {
         
         We split this loop a little counter-intuitively.
         
+        There's a risk chance of the player deciding to double down. This only happens if their score is `13 < score < 17`, and is usually set at 20%. I haven't included an option to change this.
+        
         Firstly, anything above 19 shouldn't hit. Statistically, you're more likely to break a number over 21, which is dangerous. Also, if their score is 0, then they've definitely gone bust (and shouldn't be hitting).
         
-        Once that's done, if the player has an ace counted as 11, they can risk another hit. We set up a 50% chance of hitting or not in this case with `nextBool()`, a property of GKRandom.
+        Once that's done, if the player has an ace counted as 11, they can risk another hit. We set up a determined chance of hitting or not in this case with `nextUniform()`, a property of GKRandom.
         
         If they don't have an ace counted as 11, then they should only hit if their score is less than 15 (see above).
         */
         
+        if score > 13 && score < 17 && GKARC4RandomSource().nextUniform() <= 0.2 {
+            return (false, false, true)
+        }
+        
         if score > 0 && score < 19 {
 
-            if player.scoreBonus() > 0 && GKARC4RandomSource().nextBool() {
+            if player.scoreBonus() > 0 && GKARC4RandomSource().nextUniform() < Float(aceRiskFactor) / 100 {
                 
-                return true
+                return (true, false, false)
             } else if score <= 15 {
                 
-                return true
+                return (true, false, false)
             }
         }
         
-        return false
+        return (false, true, false)
     }
     
     func isGameOver() -> Bool {

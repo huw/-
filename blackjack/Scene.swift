@@ -11,7 +11,11 @@ import GameplayKit
 
 var keys = [
     "h": false,
-    "s": false
+    "s": false,
+    "d": false,
+    "=": false,
+    "-": false,
+    "t": false
 ]
 
 let NUMBER_OF_DECKS = 1
@@ -160,10 +164,10 @@ class Scene: SKScene {
         
         /*
         Now that the game's over, we find out what the dealer's final score is.
-        Basically, the dealer keeps hitting so long as they haven't gone bust, and their score is under 17. If they get a soft 17, they're still allowed to stand.
+        Basically, the dealer keeps hitting so long as they haven't gone bust, and their score is under 17. If they get a soft 17, then their action is determined by the flag that the user has set.
         */
         
-        while !dealer.bust && dealer.score() < 17 {
+        while !dealer.bust && (dealer.score() < 17 || (dealer.score() == 17 && dealer.scoreBase() > 0 && thisRound.dealerHitsOnSoft17)) {
             
             hit(thisRound.dealer)
         }
@@ -259,17 +263,46 @@ class Scene: SKScene {
     
     /**
     The update loop determines the player actions. If the current player is still in the game, then we determine what move they should make (either based on AI or human input). If they're not, we move on and test to see if the game is over.
+     
+    The player is also able to customise the AI of the other players and dealer. When they press certain keys, we also change values and update labels accordingly.
     */
     
     override func update(currentTime: NSTimeInterval) {
         
-        while !humanPlayer.stillPlaying || (keys["s"]! || keys["h"]! || humanPlayer.score() == 21) {
+        if keys["t"]! {
+            thisRound.dealerHitsOnSoft17 = !thisRound.dealerHitsOnSoft17
+            
+            if thisRound.dealerHitsOnSoft17 {
+                (childNodeWithName("Dealer Hit") as! SKLabelNode).text = "DEALER HITS ON SOFT 17"
+            } else {
+                (childNodeWithName("Dealer Hit") as! SKLabelNode).text = "DEALER STANDS ON SOFT 17"
+            }
+            
+            keys["t"] = false
+        }
+        
+        if keys["-"]! || keys["="]! {
+            
+            if keys["-"]! && thisRound.aceRiskFactor > 0 {
+                thisRound.aceRiskFactor -= 10
+            } else if keys["="]! && thisRound.aceRiskFactor < 100 {
+                thisRound.aceRiskFactor += 10
+            }
+            
+            (childNodeWithName("Ace Risk") as! SKLabelNode).text = "Ace Risk: \(thisRound.aceRiskFactor)%"
+            
+            keys["-"] = false
+            keys["="] = false
+        }
+        
+        while !humanPlayer.stillPlaying || (keys["s"]! || keys["h"]! || keys["d"]! || humanPlayer.score() == 21) {
             let player = thisRound.activePlayer
             
             if player.stillPlaying {
                 
                 let hitting: Bool
                 let standing: Bool
+                let doubling: Bool
                     
                 if player == humanPlayer {
                     
@@ -278,27 +311,32 @@ class Scene: SKScene {
                         
                         hitting = false
                         standing = true
+                        doubling = false
                     } else {
                         
                         hitting = keys["h"]!
                         standing = keys["s"]!
+                        doubling = keys["d"]!
                     }
                     
                     keys["h"] = false
                     keys["s"] = false
+                    keys["d"] = false
                 } else {
                     
-                    let action = thisRound.shouldPlayerHit(player)
-                    
-                    hitting = action
-                    standing = !action
+                    (hitting, standing, doubling) = thisRound.AIActionChoice(player)
                 }
                 
-                if standing || player.score() == 21 {
+                if standing {
                     
                     player.standing = true
                     thisRound.nextPlayer()
                 } else if hitting {
+                    
+                    hit(player)
+                } else if doubling {
+                    
+                    player.standing = true
                     hit(player)
                 }
                 
