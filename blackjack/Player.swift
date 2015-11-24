@@ -12,6 +12,7 @@ import GameplayKit
 class Player: SKNode {
     var hand: [Card] = []
     var cash = 0
+    var bet = 25
     var standing = false
     
     /*
@@ -124,6 +125,7 @@ class Player: SKNode {
     func reset() {
         hand.removeAll()
         standing = false
+        bet = 25
         if bankrupt {
             cashLabel.text = ""
         } else {

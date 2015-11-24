@@ -90,8 +90,8 @@ class Scene: SKScene {
     func deal() {
         
         for player in thisRound.players {
-            if player.cash >= 25 {
-                player.cash -= 25
+            if player.cash >= player.bet {
+                player.cash -= player.bet
             }
         }
         
@@ -185,14 +185,14 @@ class Scene: SKScene {
             for player in thisRound.players {
                 if player.standing && !player.bust && !player.bankrupt {
                     
-                    player.cash += 50
+                    player.cash += player.bet * 2
                     
                     if player.blackjack {
                         
-                        player.cash += 25
-                        displayMessage(player, "+$75")
+                        player.cash += player.bet
+                        displayMessage(player, "+$\(player.bet * 3)")
                     } else {
-                        displayMessage(player, "+$50")
+                        displayMessage(player, "+$\(player.bet * 2)")
                     }
                 }
             }
@@ -216,20 +216,20 @@ class Scene: SKScene {
                 
                 if (player.blackjack && !dealer.blackjack) || playerScore > dealerScore {
 
-                    player.cash += 50
+                    player.cash += player.bet * 2
                     
                     if player.blackjack {
                         
-                        player.cash += 25
-                        displayMessage(player, "+$75")
+                        player.cash += player.bet
+                        displayMessage(player, "+$\(player.bet * 3)")
                     } else {
-                        displayMessage(player, "+$50")
+                        displayMessage(player, "+$\(player.bet * 2)")
                     }
                     
                 } else if (player.blackjack && dealer.blackjack) || (!dealer.blackjack && playerScore == dealerScore) {
 
-                    player.cash += 25
-                    displayMessage(player, "+$25")
+                    player.cash += player.bet
+                    displayMessage(player, "+$\(player.bet)")
                 }
             }
         }
@@ -322,7 +322,12 @@ class Scene: SKScene {
                         
                         hitting = keys["h"]!
                         standing = keys["s"]!
-                        doubling = keys["d"]!
+                        
+                        if player.cash >= player.bet {
+                            doubling = keys["d"]!
+                        } else {
+                            doubling = false
+                        }
                     }
                     
                     keys["h"] = false
@@ -341,6 +346,9 @@ class Scene: SKScene {
                     
                     hit(player)
                 } else if doubling {
+                    
+                    player.cash -= player.bet
+                    player.bet *= 2
                     
                     player.standing = true
                     hit(player)
