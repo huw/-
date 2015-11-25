@@ -35,6 +35,10 @@ class Player: SKNode {
         return !standing && !bust && !bankrupt
     }
     
+    var isCountingAce: Bool {
+        return scoreBase() > 0 && score() != scoreBase()
+    }
+    
     var baseLabel = SKLabelNode()
     var bonusLabel = SKLabelNode()
     var cashLabel = SKLabelNode()

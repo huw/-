@@ -103,44 +103,47 @@ class Round {
     }
     
     /**
+    Firstly, we check if the player is counting an ace in their score. If so, then we implement the 'ace risk'—what chance they have of standing if they have this ace. If all these conditions are met, we stand. Otherwise, we continue—which almost always leads to a hit.
+     
+    Secondly, if they're not counting their ace and their score is 10 or 11, it almost always makes sense to double. So do that.
+
+    Our AI is a card counter. It loops through the cards remaining in the deck (i.e. the cards it can't count), and calculates the average value. If, when adding this average value to our current score, the score is over 21, then we stand. This is the most effective.
+     
+    This combination of values should almost always lead to the AI defeating the house edge.
+    
     - returns
     Three Bools, which correspond to 'hitting', 'standing', and 'doubling down' respectively. To be processed by the player action loop in Scene.
     */
 
     func AIActionChoice(player: Player) -> (Bool, Bool, Bool) {
         
-        let score = player.score()
+        if player.isCountingAce && player.score() >= 18 && GKARC4RandomSource().nextUniform() < Float(aceRiskFactor) / 100 {
+            return (false, true, false)
+        }
         
-        /*
-        The average of the possible card values comes out to be something like 6.53. If we add the average to the current score, and it comes out to be more than 21, then we don't want to hit, because that means that there's a greater probability of failure. This can be simplified as `if score <= 15`.
-        
-        We split this loop a little counter-intuitively.
-        
-        There's a risk chance of the player deciding to double down. This only happens if their score is `13 < score < 17`, and is usually set at 20%. I haven't included an option to change this.
-        
-        Firstly, anything above 19 shouldn't hit. Statistically, you're more likely to break a number over 21, which is dangerous. Also, if their score is 0, then they've definitely gone bust (and shouldn't be hitting).
-        
-        Once that's done, if the player has an ace counted as 11, they can risk another hit. We set up a determined chance of hitting or not in this case with `nextUniform()`, a property of GKRandom.
-        
-        If they don't have an ace counted as 11, then they should only hit if their score is less than 15 (see above).
-        */
-        
-        if score > 13 && score < 17 && GKARC4RandomSource().nextUniform() <= 0.2 {
+        if !player.isCountingAce && (player.score() == 10 || player.score() == 11) {
             return (false, false, true)
         }
         
-        if score > 0 && score < 19 {
-
-            if player.scoreBonus() > 0 && GKARC4RandomSource().nextUniform() < Float(aceRiskFactor) / 100 {
-                
-                return (true, false, false)
-            } else if score <= 15 {
-                
-                return (true, false, false)
-            }
+        let originalHand = player.hand
+        var average: Float = 0
+        
+        for card in deck {
+            player.hand.append(card)
+            
+            average += Float(player.scoreBase() + player.scoreBonus())
+            
+            // Reset the hand
+            player.hand = originalHand
         }
         
-        return (false, true, false)
+        average = average / Float(deck.count)
+        
+        if player.score() + Int(average) <= 21 {
+            return (true, false, false)
+        } else {
+            return (false, true, false)
+        }
     }
     
     func isGameOver() -> Bool {

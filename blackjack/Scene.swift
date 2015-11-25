@@ -104,6 +104,8 @@ class Scene: SKScene {
         }
         
         hit(thisRound.dealer)
+        
+        thisRound.activePlayerIndex = 0
     }
     
     override func didMoveToView(view: SKView) {
@@ -301,38 +303,39 @@ class Scene: SKScene {
             keys["="] = false
         }
         
-        while !humanPlayer.stillPlaying || (keys["s"]! || keys["h"]! || keys["d"]! || humanPlayer.score() == 21) {
+        while true {
             let player = thisRound.activePlayer
             
             if player.stillPlaying {
                 
-                let hitting: Bool
-                let standing: Bool
-                let doubling: Bool
+                var hitting: Bool = false
+                var standing: Bool = false
+                var doubling: Bool = false
                     
                 if player == humanPlayer {
                     
-                    // Automatic win, so stand
-                    if player.score() == 21 {
-                        
-                        hitting = false
-                        standing = true
-                        doubling = false
-                    } else {
-                        
-                        hitting = keys["h"]!
-                        standing = keys["s"]!
-                        
-                        if player.cash >= player.bet {
-                            doubling = keys["d"]!
+                    if (keys["s"]! || keys["h"]! || keys["d"]! || humanPlayer.score() == 21) {
+
+                        // Automatic win, so stand
+                        if player.score() == 21 {
+
+                            standing = true
                         } else {
-                            doubling = false
+                            
+                            hitting = keys["h"]!
+                            standing = keys["s"]!
+                            
+                            if player.cash >= player.bet {
+                                doubling = keys["d"]!
+                            }
                         }
+                        
+                        keys["h"] = false
+                        keys["s"] = false
+                        keys["d"] = false
+                    } else {
+                        break
                     }
-                    
-                    keys["h"] = false
-                    keys["s"] = false
-                    keys["d"] = false
                 } else {
                     
                     (hitting, standing, doubling) = thisRound.AIActionChoice(player)
